@@ -165,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         // ViewFlipper Setting
-        final ViewFlipper vFlipper;
         vFlipper = (ViewFlipper) findViewById(R.id.viewFlipper1);
 
         // Main Layout Setting
