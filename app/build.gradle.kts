@@ -33,6 +33,8 @@ android {
 }
 
 dependencies {
+// QR 스캔 라이브러리 - ZXing ("Zebra Crossing") 기반 QR 코드 스캐너
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.12.0")

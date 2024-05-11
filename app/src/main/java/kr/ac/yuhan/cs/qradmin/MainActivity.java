@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kr.ac.yuhan.cs.qradmin.adapter.MemberAdapter;
+import kr.ac.yuhan.cs.qradmin.adapter.ProductAdapter;
 import kr.ac.yuhan.cs.qradmin.data.MemberData;
 import kr.ac.yuhan.cs.qradmin.util.ChangeMode;
 import soup.neumorphism.NeumorphButton;
@@ -458,6 +459,25 @@ public class MainActivity extends AppCompatActivity {
                 // Move to Dial
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:/010-1234-1234"));
                 startActivity(intent);
+            }
+        });
+
+        // 오자현 추가부분
+        createQRBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CreateQR.class);
+                startActivity(intent); // CreateQR 액티비티를 시작합니다.
+            }
+        });
+
+
+        createProductBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "서버와 연동으로 인해 약간의 딜레이가 발생할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                uploadFileAndSaveProductInfo();
+
             }
         });
 

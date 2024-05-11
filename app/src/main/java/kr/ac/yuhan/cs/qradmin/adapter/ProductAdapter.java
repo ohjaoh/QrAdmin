@@ -1,4 +1,4 @@
-package kr.ac.yuhan.cs.qradmin;
+package kr.ac.yuhan.cs.qradmin.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import kr.ac.yuhan.cs.qradmin.Product;
+import kr.ac.yuhan.cs.qradmin.R;
+import kr.ac.yuhan.cs.qradmin.pr_edit;
 
 
 public class ProductAdapter extends ArrayAdapter<Product> {
