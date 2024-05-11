@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,8 +32,10 @@ import java.util.Map;
 
 public class pr_edit extends AppCompatActivity {
     private FirebaseFirestore dbFirestore;
-    private EditText editProductName2, editProductPrice2, editProductStock2, editProductCategory2;
+    private EditText editProductName2, editProductPrice2, editProductStock2;
     private Button buttonUpdateProduct2;
+    private RadioGroup radioGroup2;
+    private String ProductCategory2;
     private static final int PICK_FILE_REQUEST = 2; // 파일 선택을 위한 요청 코드
     private ImageView imageViewProduct2;
 
@@ -43,15 +46,35 @@ public class pr_edit extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pr_edit);
 
+        String categorystr1 = getString(R.string.product_category1);
+        String categorystr2 = getString(R.string.product_category2);
+        String categorystr3 = getString(R.string.product_category3);
+
         // UI 컴포넌트 초기화
         editProductName2 = findViewById(R.id.editProductName2);
         editProductPrice2 = findViewById(R.id.editProductPrice2);
         editProductStock2 = findViewById(R.id.editProductStock2);
-        editProductCategory2=findViewById(R.id.editProductCategory);
         buttonUpdateProduct2 = findViewById(R.id.buttonUpdateProduct2);
         imageViewProduct2 = findViewById(R.id.imageViewProduct2);
         dbFirestore = FirebaseFirestore.getInstance();
 
+        radioGroup2 = findViewById(R.id.categroryRadioGroup2);
+        radioGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.categoryRadioBtns1){
+                    ProductCategory2=categorystr1;
+                } else if (checkedId ==R.id.categoryRadioBtns2) {
+                    ProductCategory2=categorystr2;
+                }else if (checkedId ==R.id.categoryRadioBtns3) {
+                    ProductCategory2=categorystr3;
+                }
+            }
+        });
+        //카테고리를 클릭하지 않고 넘기는 경우 기본값으로 지정ㅇ
+        if(ProductCategory2 == null){
+            ProductCategory2=categorystr1;
+        }
         // Intent에서 데이터 추출
         Intent intent = getIntent();
 
@@ -69,7 +92,13 @@ public class pr_edit extends AppCompatActivity {
         editProductName2.setText(productName);
         editProductPrice2.setText(String.valueOf(productPrice)); // int 값을 String으로 변환
         editProductStock2.setText(String.valueOf(productStock)); // int 값을 String으로 변환
-        editProductCategory2.setText(category); // 카테고리 값 세팅
+        if(category == categorystr1){
+            radioGroup2.check(R.id.categoryRadioBtns1);
+        } else if( category == categorystr2){
+            radioGroup2.check(R.id.categoryRadioBtns2);
+        }else if( category == categorystr3){
+            radioGroup2.check(R.id.categoryRadioBtns3);
+        }
 
         // 이미지 세팅
         if (productImage != null && !productImage.isEmpty()) {
@@ -121,7 +150,7 @@ public class pr_edit extends AppCompatActivity {
         String updatedName = editProductName2.getText().toString();
         String updatedPricestr = editProductPrice2.getText().toString();
         String updatedStockstr = editProductStock2.getText().toString();
-        String updatedCategory = editProductCategory2.getText().toString();
+        String updatedCategory = ProductCategory2;
 
         int updatedPrice = Integer.parseInt(updatedPricestr);
         int updatedStock = Integer.parseInt(updatedStockstr);

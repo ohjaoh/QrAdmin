@@ -16,12 +16,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -112,8 +117,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageViewProduct;
     private Uri fileuri = null;
     private static final int PICK_FILE_REQUEST = 2; // 파일 선택을 위한 요청 코드
-    private EditText editProductName, editProductPrice, editProductStock, editProductCategory;
-
+    private EditText editProductName, editProductPrice, editProductStock;
+    private String ProductCategory;
+    private RadioGroup radioGroup;
     private ListView listView2;
     private ProductAdapter adapter2;
     private Handler handler = new Handler();
@@ -132,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String categorystr1 = getString(R.string.product_category1);
+        String categorystr2 = getString(R.string.product_category2);
+        String categorystr3 = getString(R.string.product_category3);
+
         // Listview Setting
         ListView listView = findViewById(R.id.listView);
 
@@ -144,6 +154,24 @@ public class MainActivity extends AppCompatActivity {
 
         // 오자현추가부분
         listView2 = findViewById(R.id.listViewProducts); // 레이아웃에서 리스트 뷰 연결
+
+        radioGroup = findViewById(R.id.categroryRadioGroup);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.categoryRadioBtn1){
+                    ProductCategory=categorystr1;
+                } else if (checkedId ==R.id.categoryRadioBtn2) {
+                    ProductCategory=categorystr2;
+                }else if (checkedId ==R.id.categoryRadioBtn3) {
+                    ProductCategory=categorystr3;
+                }
+            }
+        });
+        //카테고리를 클릭하지 않고 넘기는 경우 기본값으로 지정ㅇ
+        if(ProductCategory == null){
+            ProductCategory=categorystr1;
+        }
 
         adapter2 = new ProductAdapter(this, productList);// 여기서 객체를 생성할 때 문제가 있음
         listView2.setAdapter(adapter2); // 리스트 뷰에 어댑터 설정
@@ -160,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
         editProductName = findViewById(R.id.editProductName);
         editProductPrice = findViewById(R.id.editProductPrice);
         editProductStock = findViewById(R.id.editProductStock);
-        editProductCategory = findViewById(R.id.editProductCategory);
         dbFirestore = FirebaseFirestore.getInstance();
 
 
@@ -623,6 +650,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
     //오자현 추가부분
+
     void loadItemsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance(); // 파이어베이스 인스턴스 생성
         db.collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -659,7 +687,7 @@ public class MainActivity extends AppCompatActivity {
         String name = editProductName.getText().toString().trim();
         String priceStr = editProductPrice.getText().toString().trim();
         String stockStr = editProductStock.getText().toString().trim();
-        String category = editProductCategory.getText().toString().trim();
+        String category = ProductCategory;
 
         if (name.isEmpty() || priceStr.isEmpty() || stockStr.isEmpty() || fileuri == null || category.isEmpty()) {
             Toast.makeText(this, "모든 필드를 채워주세요", Toast.LENGTH_SHORT).show();
@@ -722,7 +750,7 @@ public class MainActivity extends AppCompatActivity {
         editProductName.setText("");
         editProductPrice.setText("");
         editProductStock.setText("");
-        editProductCategory.setText("");
+        radioGroup.check(R.id.categoryRadioBtn1);
     }
 
     private void openFileManager() {

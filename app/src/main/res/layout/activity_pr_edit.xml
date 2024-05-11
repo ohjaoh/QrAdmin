@@ -34,11 +34,30 @@
         android:hint="Stock"
         android:inputType="number" />
 
-    <EditText
-        android:id="@+id/editProductCategory"
+    <RadioGroup
+        android:id="@+id/categroryRadioGroup2"
+        android:checkableBehavior="single"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:hint="Product Category"/>
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:checked="true"
+            android:id="@+id/categoryRadioBtns1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_category1"/>
+        <RadioButton
+            android:checked="false"
+            android:id="@+id/categoryRadioBtns2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_category2"/>
+        <RadioButton
+            android:checked="false"
+            android:id="@+id/categoryRadioBtns3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_category3"/>
+    </RadioGroup>
 
     <Button
         android:id="@+id/buttonUpdateProduct2"

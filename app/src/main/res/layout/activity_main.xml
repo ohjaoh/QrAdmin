@@ -400,14 +400,31 @@
                             android:layout_height="wrap_content"
                             android:padding="20dp"
                             app:neumorph_shapeType="pressed">
-                            <EditText
-                                android:id="@+id/editProductCategory"
+                        <!-- 여기를 라디오그룹과 라디오버튼으로 수정 edittext는 나중에 삭제-->
+                            <RadioGroup
+                                android:id="@+id/categroryRadioGroup"
+                                android:checkableBehavior="single"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:autofillHints="product_category"
-                                android:hint="@string/product_category"
-                                android:inputType="text"
-                                android:textColor="@color/mainText"/>
+                                android:layout_height="match_parent">
+                                <RadioButton
+                                    android:checked="true"
+                                    android:id="@+id/categoryRadioBtn1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/product_category1"/>
+                                <RadioButton
+                                    android:checked="false"
+                                    android:id="@+id/categoryRadioBtn2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/product_category2"/>
+                                <RadioButton
+                                    android:checked="false"
+                                    android:id="@+id/categoryRadioBtn3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/product_category3"/>
+                            </RadioGroup>
                         </soup.neumorphism.NeumorphCardView>
                         <soup.neumorphism.NeumorphCardView
                             style="@style/Widget.Neumorph.CardView"

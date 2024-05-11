@@ -72,6 +72,10 @@
     <string name="product_image">상품 이미지</string>
     <string name="product_name">상품명</string>
     <string name="product_category">카테고리</string>
+<!--   여기서 카테고리내용 바꾸면 한번에 다 바뀜-->
+    <string name="product_category1">플라스틱</string>
+    <string name="product_category2">카테고리2</string>
+    <string name="product_category3">카테고리3</string>
     <string name="product_count">상품 재고</string>
     <string name="product_price">상품 가격</string>
     <string name="create_QR">QR 생성</string>
