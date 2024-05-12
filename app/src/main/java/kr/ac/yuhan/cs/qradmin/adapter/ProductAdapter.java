@@ -61,14 +61,14 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         if (product == null) {
             Log.e("ProductAdapter", "Product at position " + position + " is null.");
         } else {
-            Log.d("ProductAdapter", "Displaying product at position " + position + ": " + product.getName());
-            holder.textViewProductName.setText(product.getName());
+            Log.d("ProductAdapter", "Displaying product at position " + position + ": " + product.getproductName());
+            holder.textViewProductName.setText(product.getproductName());
             holder.textViewCategory.setText(product.getCategory());
             holder.textViewPrice.setText(String.valueOf(product.getPrice()));
             holder.textViewStock.setText(String.valueOf(product.getStock()));
-            if (product.getImageo() != null && !product.getImageo().isEmpty()) {
+            if (product.getImage() != null && !product.getImage().isEmpty()) {
                 Glide.with(getContext())
-                        .load(product.getImageo())
+                        .load(product.getImage())
                         .placeholder(R.drawable.default_image)
                         .into(holder.imageViewProduct);
             } else {
@@ -87,9 +87,9 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 //포지션은 잘 넘어감
                 // Intent를 사용하여 수정 액티비티로 Product 정보 전달
                 Intent intent = new Intent(getContext(), pr_edit.class);
-                intent.putExtra("productCode", product.getproductcode());
-                intent.putExtra("productName", product.getName());
-                intent.putExtra("productImage", product.getImageo());
+                intent.putExtra("productCode", product.getproductCode());
+                intent.putExtra("productName", product.getproductName());
+                intent.putExtra("productImage", product.getImage());
                 intent.putExtra("productPrice", product.getPrice());
                 intent.putExtra("productStock", product.getStock());
                 intent.putExtra("category", product.getCategory());
@@ -101,7 +101,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             @Override
             public void onClick(View v) {
                 // 상품 삭제 로직 호출
-                deleteProductByProductCode(product.getproductcode());
+                deleteProductByProductCode(product.getproductCode());
 
             }
         });
@@ -160,7 +160,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
     public void removeProductByCode(int productCode) {
         for (int i = 0; i < getCount(); i++) {
             Product p = getItem(i);
-            if (p.getproductcode() == productCode) {
+            if (p.getproductCode() == productCode) {
                 remove(p); // 상품 제거
                 break;
             }

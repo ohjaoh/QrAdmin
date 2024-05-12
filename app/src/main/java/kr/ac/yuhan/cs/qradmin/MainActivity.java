@@ -112,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
     private final int btnColor = Color.rgb(0, 174, 142);
 
     //오자현추가부분
+    //검색구현으로 추가한 부분
+    private EditText productSearchedittext;
+    private NeumorphButton productSearchBtn;
+    private String currentSearchText = ""; // 현재 검색 텍스트 저장
+    //검색구현으로 추가한부분끝
+
     private ViewFlipper vFlipper;
     private FirebaseFirestore dbFirestore;
     private ImageView imageViewProduct;
@@ -123,13 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView2;
     private ProductAdapter adapter2;
     private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            loadItemsFromFirestore(); // 파이어베이스에서 데이터를 불러오는 메서드 호출
-            handler.postDelayed(this, 5000); // 5초 후에 다시 실행하도록 스케줄링
-        }
-    };
+    private Runnable runnable;
 
     private ArrayList<Product> productList = new ArrayList<>(); // 상품 정보를 담을 리스트
 
@@ -159,25 +159,24 @@ public class MainActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == R.id.categoryRadioBtn1){
-                    ProductCategory=categorystr1;
-                } else if (checkedId ==R.id.categoryRadioBtn2) {
-                    ProductCategory=categorystr2;
-                }else if (checkedId ==R.id.categoryRadioBtn3) {
-                    ProductCategory=categorystr3;
+                if (checkedId == R.id.categoryRadioBtn1) {
+                    ProductCategory = categorystr1;
+                } else if (checkedId == R.id.categoryRadioBtn2) {
+                    ProductCategory = categorystr2;
+                } else if (checkedId == R.id.categoryRadioBtn3) {
+                    ProductCategory = categorystr3;
                 }
             }
         });
         //카테고리를 클릭하지 않고 넘기는 경우 기본값으로 지정ㅇ
-        if(ProductCategory == null){
-            ProductCategory=categorystr1;
+        if (ProductCategory == null) {
+            ProductCategory = categorystr1;
         }
 
-        adapter2 = new ProductAdapter(this, productList);// 여기서 객체를 생성할 때 문제가 있음
+        adapter2 = new ProductAdapter(this, productList);
         listView2.setAdapter(adapter2); // 리스트 뷰에 어댑터 설정
 
         loadItemsFromFirestore();
-        handler.postDelayed(runnable, 5000); // 5초마다 데이터를 새로 고침
         imageViewProduct = findViewById(R.id.imageViewProduct);
         imageViewProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +188,23 @@ public class MainActivity extends AppCompatActivity {
         editProductPrice = findViewById(R.id.editProductPrice);
         editProductStock = findViewById(R.id.editProductStock);
         dbFirestore = FirebaseFirestore.getInstance();
+
+        //상품검색기능추가부분시작
+        // 상품 목록 자동 새로고침 시작
+        startAutoRefresh();
+        productSearchedittext = findViewById(R.id.productSearchEditText);
+        productSearchBtn = findViewById(R.id.productSearchBtn);
+        productSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchText = productSearchedittext.getText().toString();
+                productSearchedittext.setText("");
+                currentSearchText = searchText; // 현재 검색 텍스트 업데이트
+                loadItemsFromFirestore(); // 필터링된 상품 새로고침
+                currentSearchText="";
+            }
+        });
+        //상품검색기능추가부분끝
 
 
         // ViewFlipper Setting
@@ -226,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
         // Payment List Id
         paySearchBtn = (NeumorphButton) findViewById(R.id.paySearchBtn);
         payListCardView = (NeumorphCardView) findViewById(R.id.payListCardView);
-        input_searchIdPay =(NeumorphCardView) findViewById(R.id.input_searchIdPay);
+        input_searchIdPay = (NeumorphCardView) findViewById(R.id.input_searchIdPay);
 
         // Product Register Page Id
         input_productImage = (NeumorphCardView) findViewById(R.id.input_productImage);
@@ -274,7 +290,9 @@ public class MainActivity extends AppCompatActivity {
                 setting.setShapeType(1);
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {setting.setShapeType(0);}
+                    public void run() {
+                        setting.setShapeType(0);
+                    }
                 }, 200);
                 // Setting 페이지로 이동 및 메인페이지 배경색상 전달
                 Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
@@ -291,10 +309,12 @@ public class MainActivity extends AppCompatActivity {
                 changeMode.setShapeType(1);
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {changeMode.setShapeType(0);}
+                    public void run() {
+                        changeMode.setShapeType(0);
+                    }
                 }, 200);
 
-                if(mode == 0) {
+                if (mode == 0) {
                     // DarkMode
                     backgroundColor = darkModeBackgroundColor;
                     main.setBackgroundColor(backgroundColor);
@@ -359,8 +379,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Change Mode Value
                     mode++;
-                }
-                else if(mode == 1) {
+                } else if (mode == 1) {
                     // LightMode
                     backgroundColor = mainBackgroundColor;
                     main.setBackgroundColor(backgroundColor);
@@ -425,8 +444,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Change Mode Value
                     mode--;
-                }
-                else {
+                } else {
                     showErrorDialog(MainActivity.this, "임성준");
                 }
             }
@@ -441,7 +459,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {adminBtn.setShapeType(0);}
+                    public void run() {
+                        adminBtn.setShapeType(0);
+                    }
                 }, 200);
                 // Move to AdminList Page & transfer main page background color
                 Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
@@ -460,7 +480,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {adminScheduleBtn.setShapeType(0);}
+                    public void run() {
+                        adminScheduleBtn.setShapeType(0);
+                    }
                 }, 200);
                 // Move to AdminSchedule Page & transfer main page background color
                 Intent intent = new Intent(getApplicationContext(), AdminScheduleActivity.class);
@@ -479,7 +501,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {callBtn.setShapeType(0);}
+                    public void run() {
+                        callBtn.setShapeType(0);
+                    }
                 }, 200);
 
                 // Move to Dial
@@ -516,7 +540,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {login.setShapeType(0);}
+                    public void run() {
+                        login.setShapeType(0);
+                    }
                 }, 200);
                 // Move to Login Page & transfer main page background color
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -535,7 +561,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {homeBtn.setShapeType(0);}
+                    public void run() {
+                        homeBtn.setShapeType(0);
+                    }
                 }, 200);
                 vFlipper.setDisplayedChild(0);
             }
@@ -550,7 +578,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {memberBtn.setShapeType(0);}
+                    public void run() {
+                        memberBtn.setShapeType(0);
+                    }
                 }, 200);
                 vFlipper.setDisplayedChild(1);
             }
@@ -565,7 +595,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {productBtn.setShapeType(0);}
+                    public void run() {
+                        productBtn.setShapeType(0);
+                    }
                 }, 200);
                 vFlipper.setDisplayedChild(2);
             }
@@ -580,7 +612,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {payHistoryBtn.setShapeType(0);}
+                    public void run() {
+                        payHistoryBtn.setShapeType(0);
+                    }
                 }, 200);
                 vFlipper.setDisplayedChild(3);
             }
@@ -595,7 +629,9 @@ public class MainActivity extends AppCompatActivity {
                 // After clicked, it changes back to 'flat'
                 v.postDelayed(new Runnable() {
                     @Override
-                    public void run() {productPushBtn.setShapeType(0);}
+                    public void run() {
+                        productPushBtn.setShapeType(0);
+                    }
                 }, 200);
                 vFlipper.setDisplayedChild(4);
             }
@@ -628,6 +664,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     private void showMemberInfoDialog(MemberData selectedItem) {
         // Create Dialog & Layout Setting
         Dialog dialog = new Dialog(MainActivity.this);
@@ -651,9 +688,35 @@ public class MainActivity extends AppCompatActivity {
     }
     //오자현 추가부분
 
+    //상품검색기능구현시작
+    // 5초마다 새로고침 시작
+    private void startAutoRefresh() {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                loadItemsFromFirestore();
+                handler.postDelayed(this, 5000);  // 5초 후에 다시 실행하도록 스케줄링, 일시정지 여부와 상관없이 스케줄 유지
+            }
+        };
+        handler.postDelayed(runnable, 5000);  // 처음 시작
+    }
+
+
     void loadItemsFromFirestore() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance(); // 파이어베이스 인스턴스 생성
-        db.collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Task<QuerySnapshot> query;
+
+        if (!currentSearchText.isEmpty()) {
+            // 검색 텍스트가 있을 경우, 해당 상품 이름으로 필터링된 쿼리 실행
+            query = db.collection("products")
+                    .whereEqualTo("productName", currentSearchText)
+                    .get();
+        } else {
+            // 검색 텍스트가 없을 경우, 전체 상품 로드
+            query = db.collection("products").get();
+        }
+
+        query.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -670,10 +733,8 @@ public class MainActivity extends AppCompatActivity {
                             imageUrl = "R.drawable.default_image"; // 기본 이미지 URL 사용
                         }
 
-                        Log.d("DatabaseViewActivity", "Loaded imageUrl: " + imageUrl);
                         productList.add(new Product(code, productName, category, imageUrl, price, stock)); // 리스트에 제품 추가
                     }
-
                     adapter2.notifyDataSetChanged(); // 데이터 변경을 어댑터에 알림
                 } else {
                     Log.e("DatabaseViewActivity", "Error getting documents: ", task.getException());
@@ -682,6 +743,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //상품검색기능구현끝
     private void uploadFileAndSaveProductInfo() {
         Log.d("UploadFile", "uploadFileAndSaveProductInfo started");
         String name = editProductName.getText().toString().trim();
